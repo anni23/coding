@@ -24,6 +24,12 @@ class KeyInsertionException extends Exception{
 	}
 }
 
+class KeyNotFoundException extends Exception{
+	public KeyNotFoundException(Integer key) {
+		super("key '" + key + "' is not present");
+	}
+}
+
 class HashMap {
 	int capacity;
 	MapNode map[]; 
@@ -45,8 +51,17 @@ class HashMap {
 		return root;
 	}
 
-	public String get(Integer key) {
-		return "";
+	public String get(Integer key) throws KeyNotFoundException {
+		int index = Math.abs(key.hashCode() % capacity);
+		return search(map[index], key);
+	}
+
+	public String search(MapNode root, Integer key) throws KeyNotFoundException {
+		if(root == null) throw new KeyNotFoundException(key);
+		if(root.key.equals(key)) return root.value;
+		if(key < root.key) return search(root.left, key);
+		if(key > root.key) return search(root.right, key); 
+		return null;
 	}
 
 	public void remove(Integer key) {
@@ -70,7 +85,7 @@ class HashMap {
 	}
 }
 public class HashMapImpl {
-	public static void main(String args[]) throws KeyInsertionException {
+	public static void main(String args[]) throws KeyInsertionException, KeyNotFoundException {
 		HashMap map = new HashMap(10);
 		map.put(10, "ten");
 		map.put(5, "five");
@@ -80,7 +95,12 @@ public class HashMapImpl {
 		map.put(15, "fifteen");
 		//map.put(5, "xyz");
 		map.put(7, "seven");
-
 		System.out.println(map);
+
+		System.out.println(map.get(10));
+		System.out.println(map.get(7));
+		System.out.println(map.get(1));
+
+
 	}
 }
