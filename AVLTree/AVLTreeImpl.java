@@ -3,6 +3,7 @@ class TreeNode {
 	int val;
 	TreeNode left;
 	TreeNode right;
+	int height;
 	public TreeNode(int val) {
 		this.val = val;
 	}
@@ -27,11 +28,19 @@ class AVLTree {
 	}
 
 	public TreeNode balance(TreeNode root) {
+		height(this.root);
 		if(Math.abs(height(root.left) - height(root.right)) > 1) {
+			/*
 			if(height(root.right) > height(root.left) && height(root.right.right) > height(root.right.left)) return leftRotate(root);
 			if(height(root.left) > height(root.right) && height(root.left.right) > height(root.left.left)) return leftRightRotate(root);
 			if(height(root.left) > height(root.right) && height(root.left.left) > height(root.left.right)) return rightRotate(root);
 			if(height(root.right) > height(root.left) && height(root.right.left) > height(root.right.right)) return rightLeftRotate(root);
+			*/
+
+			if((root.right == null ? 0 : root.right.height) > (root.left == null ? 0 : root.left.height) && (root.right.right == null ? 0 : root.right.right.height) > (root.right.left == null ? 0 : root.right.left.height)) return leftRotate(root);
+			if((root.left == null ? 0 : root.left.height) > (root.right == null ? 0 : root.right.height) && (root.left.right == null ? 0 : root.left.right.height) > (root.left.left == null ? 0 : root.left.left.height)) return leftRightRotate(root);
+			if((root.left == null ? 0 : root.left.height) > (root.right == null ? 0 : root.right.height) && (root.left.left == null ? 0 : root.left.left.height) > (root.left.right == null ? 0 : root.left.right.height)) return rightRotate(root);
+			if((root.right == null ? 0 : root.right.height) > (root.left == null ? 0 : root.left.height) && (root.right.left == null ? 0 : root.right.left.height) > (root.right.right == null ? 0 : root.right.right.height)) return rightLeftRotate(root);
 		}
 		return root;
 	}
@@ -62,7 +71,8 @@ class AVLTree {
 
 	public int height(TreeNode root) {
 		if(root == null) return 0;
-		return Math.max(height(root.left), height(root.right)) + 1;
+		root.height = Math.max(height(root.left), height(root.right)) + 1;
+		return root.height;
 	}
 
 	public List<List<Integer>> levelOrder(TreeNode root) {
@@ -87,13 +97,15 @@ class AVLTree {
 public class AVLTreeImpl {
 	public static void main(String args[]) {
 		AVLTree avl = new AVLTree();
+		avl.add(15);
 		avl.add(10);
-		avl.add(5);
-		avl.add(12);
-		avl.add(3);
-		avl.add(8);
+		avl.add(20);
+		avl.add(18);
+		avl.add(25);
 		System.out.println(avl.levelOrder(avl.root));
-		avl.add(7);
+
+
+		avl.add(17);
 		System.out.println(avl.levelOrder(avl.root));
 	}
 }
@@ -101,15 +113,17 @@ public class AVLTreeImpl {
 
 /*
 
+rightLeftRotate();
 
 
-             10
-            /  \ 
-           5   12
-          / \    \
-         3   8   15
-            / 
-           7 
+
+             15                                        15                                            18
+            /  \           rightRotate(20)            /  \            leftRotate(15)                /  \
+           10   20        ----------------->         10  18         ----------------->             15  20
+               /  \                                     /  \                                      /  \   \
+              18  25                                   17  20                                    10  17  25
+            /                                                \ 
+           17                                                25
 
 
 */
